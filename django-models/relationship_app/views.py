@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.core.serializers import serialize
 
-from .models import *
+from .models import Library
 from django.views.generic import ListView
 # Create your views here.
 
@@ -16,7 +16,7 @@ def list_books(request):
 class displayLibrary(ListView):
     # model = Library
     # template_name = "library_detail.html"
-    model = Book
+    model = Library
 
     def get(self, request):
         books = serialize("json", self.get_queryset().all())
