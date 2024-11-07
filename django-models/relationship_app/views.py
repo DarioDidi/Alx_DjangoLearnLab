@@ -12,8 +12,8 @@ def list_books(request):
     print(results)
     return render(request, 'relationship_app/list_books.html', context={'books': results})
 
-
-class displayLibrary(DetailView):
+"from .views import list_books", "LibraryDetailView"
+class LibraryDetailView(DetailView):
     # model = Library
     # template_name = "library_detail.html"
     model = Library
