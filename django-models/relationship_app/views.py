@@ -2,10 +2,10 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.core.serializers import serialize
 
-from .models import Library
+from .models import Library, Book
 from django.views.generic import ListView
+from django.views.generic.detail import DetailView
 # Create your views here.
-
 
 def list_books(request):
     results = serialize("json", Book.objects.all())
@@ -13,7 +13,7 @@ def list_books(request):
     return render(request, 'relationship_app/list_books.html', context={'books': results})
 
 
-class displayLibrary(ListView):
+class displayLibrary(DetailView):
     # model = Library
     # template_name = "library_detail.html"
     model = Library
