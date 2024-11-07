@@ -10,7 +10,7 @@ from django.views.generic import ListView
 def list_books(request):
     results = serialize("json", Book.objects.all())
     print(results)
-    return render(request, 'list_books.html', context={'books': results})
+    return render(request, 'relationship_app/list_books.html', context={'books': results})
 
 
 class displayLibrary(ListView):
@@ -20,4 +20,4 @@ class displayLibrary(ListView):
 
     def get(self, request):
         books = serialize("json", self.get_queryset().all())
-        return render(request, "library_detail.html", context={'books': books})
+        return render(request, "relationship_app/library_detail.html", context={'books': books})
