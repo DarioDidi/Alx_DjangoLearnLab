@@ -8,7 +8,8 @@ from django.contrib.auth import views
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 
-from django.contrib.auth.decorators import permission_required, user_passes_test
+from django.contrib.auth.decorators import user_passes_test
+from django.utils.decorators import method_decorator
 # Create your views here.
 
 from .models import Library, Book, UserProfile
@@ -42,22 +43,31 @@ def register(request):
     return render(request, "relationship_app/register.html", {"form": UserCreationForm})
 
 
-def role_check(user):
+def admin_check(user):
     profile = UserProfile.objects.get(user=user)
-    return profile.role
-# @permission_required('relationship_app.Admin')
+    return profile.role == "Admin"
 
 
-@user_passes_test(role_check == "Admin")
-def admin_view(request):
+def librarian_check(user):
+    profile = UserProfile.objects.get(user=user)
+    return profile.role == "Librarian"
+
+
+def member_check(user):
+    profile = UserProfile.objects.get(user=user)
+    return profile.role == "Member"
+
+
+@method_decorator(user_passes_test(admin_check), name='Admin')
+class Admin():
     pass
 
 
-@user_passes_test(role_check == "Librarian")
-def librarian_view(request):
+@method_decorator(user_passes_test(librarian_check), name='Librarian')
+class Librarian():
     pass
 
 
-@user_passes_test(role_check == "Member")
-def member_view(request):
+@method_decorator(user_passes_test(member_check), name='Member')
+class Librarian():
     pass
