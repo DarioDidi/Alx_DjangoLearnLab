@@ -10,8 +10,6 @@ urlpatterns = [
     path('displaylibrary/', LibraryDetailView.as_view(), name="display_library"),
     path('', include('django.contrib.auth.urls')),
     path('register', views.register, name='register'),
-    path('login', LoginView.as_view(
-        template_name="registration/login"), name="login"),
-    path('logout', LogoutView.as_view(
-        template_name="registration/logout"), name="logout"),
+    path('login', LoginView.as_view(template_name="registration/login"), name="login"),
+    path('logout', LogoutView.as_view(template_name="registration/logout"), name="logout"),
 ]
