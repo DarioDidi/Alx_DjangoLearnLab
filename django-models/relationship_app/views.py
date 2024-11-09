@@ -58,16 +58,16 @@ def member_check(user):
     return profile.role == "Member"
 
 
-@method_decorator(user_passes_test(admin_check), name='Admin')
+@method_decorator(user_passes_test(admin_check))
 class Admin():
     pass
 
 
-@method_decorator(user_passes_test(librarian_check), name='Librarian')
+@method_decorator(user_passes_test(librarian_check))
 class Librarian():
     pass
 
 
-@method_decorator(user_passes_test(member_check), name='Member')
+@method_decorator(user_passes_test(member_check))
 class Librarian():
     pass
