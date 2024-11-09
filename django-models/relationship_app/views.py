@@ -2,15 +2,16 @@ from django.shortcuts import render, redirect
 # from django.http import JsonResponse
 from django.core.serializers import serialize
 
-from .models import Library, Book
 # from django.views.generic import ListView
 from django.views.generic.detail import DetailView
 from django.contrib.auth import views
-# Create your views here.
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 
-# views.register(LogoutView.as_view(template_name=", "LoginView.as_view(template_name="
+from django.contrib.auth.decorators import permission_required, user_passes_test
+# Create your views here.
+
+from .models import Library, Book, UserProfile
 
 
 def list_books(request):
@@ -39,3 +40,24 @@ def register(request):
     else:
         form = UserCreationForm()
     return render(request, "relationship_app/register.html", {"form": UserCreationForm})
+
+
+def role_check(user):
+    profile = UserProfile.objects.get(user=user)
+    return profile.role
+# @permission_required('relationship_app.Admin')
+
+
+@user_passes_test(role_check == "Admin")
+def admin_view(request):
+    pass
+
+
+@user_passes_test(role_check == "Librarian")
+def librarian_view(request):
+    pass
+
+
+@user_passes_test(role_check == "Member")
+def member_view(request):
+    pass
