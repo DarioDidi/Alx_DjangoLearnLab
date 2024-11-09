@@ -1,11 +1,13 @@
-from django.shortcuts import render
-from django.http import JsonResponse
+from django.shortcuts import render, redirect
+# from django.http import JsonResponse
 from django.core.serializers import serialize
 
 from .models import Library, Book
-from django.views.generic import ListView
+# from django.views.generic import ListView
 from django.views.generic.detail import DetailView
 # Create your views here.
+from django.contrib.auth import login
+from django.contrib.auth.forms import UserCreationForm
 
 
 def list_books(request):
@@ -27,9 +29,13 @@ class LibraryDetailView(DetailView):
         return render(request, "relationship_app/library_detail.html", context={'books': books})
 
 
-def register(response):
-    if response.method == "POST":
-        pass
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.post)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('/')
     else:
-        pass
-    return render(response, "register/register.html", {"form": form})
+        form = UserCreationForm()
+    return render(response, "register/register.html", {"form": UserCreationForm})
