@@ -5,10 +5,12 @@ from django.core.serializers import serialize
 from .models import Library, Book
 # from django.views.generic import ListView
 from django.views.generic.detail import DetailView
+from django.contrib.auth import views
 # Create your views here.
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 
+# views.register(LogoutView.as_view(template_name=", "LoginView.as_view(template_name="
 
 def list_books(request):
     results = serialize("json", Book.objects.all())
@@ -16,7 +18,6 @@ def list_books(request):
     return render(request, 'relationship_app/list_books.html', context={'books': results})
 
 
-"from .views import list_books", "LibraryDetailView"
 
 
 class LibraryDetailView(DetailView):
