@@ -12,12 +12,11 @@ from django.contrib.auth.forms import UserCreationForm
 
 # views.register(LogoutView.as_view(template_name=", "LoginView.as_view(template_name="
 
+
 def list_books(request):
     results = serialize("json", Book.objects.all())
     print(results)
     return render(request, 'relationship_app/list_books.html', context={'books': results})
-
-
 
 
 class LibraryDetailView(DetailView):
@@ -39,4 +38,4 @@ def register(request):
             return redirect('/')
     else:
         form = UserCreationForm()
-    return render(request, "registration/register.html", {"form": UserCreationForm})
+    return render(request, "relationship_app/register.html", {"form": UserCreationForm})
