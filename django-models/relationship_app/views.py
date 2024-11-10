@@ -43,17 +43,17 @@ def register(request):
     return render(request, "relationship_app/register.html", {"form": UserCreationForm})
 
 
-def admin_check(user):
+def Admin(user):
     profile = UserProfile.objects.get(user=user)
     return profile.role == "Admin"
 
 
-def librarian_check(user):
+def Librarian(user):
     profile = UserProfile.objects.get(user=user)
     return profile.role == "Librarian"
 
 
-def member_check(user):
+def Member(user):
     profile = UserProfile.objects.get(user=user)
     return profile.role == "Member"
 
