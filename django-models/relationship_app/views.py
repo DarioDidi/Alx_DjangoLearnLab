@@ -43,31 +43,46 @@ def register(request):
     return render(request, "relationship_app/register.html", {"form": UserCreationForm})
 
 
-def Admin(user):
+def admin_check(user):
     profile = UserProfile.objects.get(user=user)
     return profile.role == "Admin"
 
 
-def Librarian(user):
+def librarian_check(user):
     profile = UserProfile.objects.get(user=user)
     return profile.role == "Librarian"
 
 
-def Member(user):
+def member_check(user):
     profile = UserProfile.objects.get(user=user)
     return profile.role == "Member"
 
 
-@method_decorator(user_passes_test(admin_check))
-class Admin(DetailView):
+@user_passes_test(admin_check)
+def Admin(request):
     pass
 
 
-@method_decorator(user_passes_test(librarian_check))
-class Librarian(DetailView):
+@user_passes_test(librarian_check)
+def Librarian(request):
     pass
 
 
-@method_decorator(user_passes_test(member_check))
-class Member(DetailView):
+@user_passes_test(member_check)
+def Member(request):
     pass
+
+
+# @method_decorator(user_passes_test(admin_check))
+# class Admin(DetailView):
+#     pass
+
+
+# @method_decorator(user_passes_test(librarian_check))
+# class Librarian(DetailView):
+#     pass
+
+
+# @method_decorator(user_passes_test(member_check))
+# class Member(DetailView):
+#     pass
