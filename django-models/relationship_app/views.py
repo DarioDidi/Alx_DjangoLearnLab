@@ -88,16 +88,3 @@ def edit_book(request):
 @permission_required('relationship_app.can_delete_book')
 def delete_book(request):
     pass
-# @method_decorator(user_passes_test(admin_check))
-# class Admin(DetailView):
-#     pass
-
-
-# @method_decorator(user_passes_test(librarian_check))
-# class Librarian(DetailView):
-#     pass
-
-
-# @method_decorator(user_passes_test(member_check))
-# class Member(DetailView):
-#     pass
