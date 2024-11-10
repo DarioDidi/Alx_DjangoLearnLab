@@ -1,7 +1,9 @@
+author_name = "a"
 from .models import *
-
-author = Author.get(name="a")
+author = Author.get(name=author_name)
 books = Book.objects.get(author=author)
-library = Library.get(name="a")
+books.all()
+library_name = "a"
+library = Library.objects.get(name=library_name)
 books = Book.objects.get(library=library)
 librarian = Librarian.objects.get(library=library)
