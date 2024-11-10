@@ -59,15 +59,15 @@ def member_check(user):
 
 
 @method_decorator(user_passes_test(admin_check))
-class Admin():
+class Admin(DetailView):
     pass
 
 
 @method_decorator(user_passes_test(librarian_check))
-class Librarian():
+class Librarian(DetailView):
     pass
 
 
 @method_decorator(user_passes_test(member_check))
-class Librarian():
+class Member(DetailView):
     pass
