@@ -8,7 +8,7 @@ from django.contrib.auth import views
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 
-from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import user_passes_test, permission_required
 from django.utils.decorators import method_decorator
 # Create your views here.
 
@@ -59,20 +59,35 @@ def member_check(user):
 
 
 @user_passes_test(admin_check)
+@permission_required(['relationship_app.can_add_book', 'relationship_app.can_change_book', 'relationship_app.can_delete_book'])
 def admin_view(request):
     pass
 
 
 @user_passes_test(librarian_check)
+@permission_required(['relationship_app.can_add_book', 'relationship_app.can_change_book', 'relationship_app.can_delete_book'])
 def librarian_view(request):
     pass
 
 
 @user_passes_test(member_check)
+# @permission_required(['relationship_app.can_add_book', 'relationship_app.can_change_book', 'relationship_app.can_delete_book'])
 def member_view(request):
     pass
 
 
+#creation, modification, and deletion.
+@permission_required('relationship_app.can_add_book')
+def create_book(request):
+    pass
+
+@permission_required('relationship_app.can_change_book')
+def change_book(request):
+    pass
+
+@permission_required('relationship_app.can_delete_book')
+def delete_book(request):
+    pass
 # @method_decorator(user_passes_test(admin_check))
 # class Admin(DetailView):
 #     pass
