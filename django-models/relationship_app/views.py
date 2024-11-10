@@ -60,31 +60,30 @@ def member_check(user):
 
 
 @user_passes_test(admin_check)
-@permission_required(['relationship_app.can_add_book', 'relationship_app.can_change_book', 'relationship_app.can_delete_book'])
 def admin_view(request):
-    pass
+    return render(request, 'relationship_app/admin_view.html')
 
 
 @user_passes_test(librarian_check)
-@permission_required(['relationship_app.can_add_book', 'relationship_app.can_change_book', 'relationship_app.can_delete_book'])
 def librarian_view(request):
-    pass
+    return render(request, 'relationship_app/librarian_view.html')
 
 
 @user_passes_test(member_check)
-# @permission_required(['relationship_app.can_add_book', 'relationship_app.can_change_book', 'relationship_app.can_delete_book'])
 def member_view(request):
-    pass
+    return render(request, 'relationship_app/member_view.html')
 
 
-#creation, modification, and deletion.
+# creation, modification, and deletion.
 @permission_required('relationship_app.can_add_book')
 def add_book(request):
     pass
 
+
 @permission_required('relationship_app.can_change_book')
 def edit_book(request):
     pass
+
 
 @permission_required('relationship_app.can_delete_book')
 def delete_book(request):
