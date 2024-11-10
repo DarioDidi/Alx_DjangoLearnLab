@@ -79,11 +79,11 @@ def member_view(request):
 
 #creation, modification, and deletion.
 @permission_required('relationship_app.can_add_book')
-def create_book(request):
+def add_book(request):
     pass
 
 @permission_required('relationship_app.can_change_book')
-def change_book(request):
+def edit_book(request):
     pass
 
 @permission_required('relationship_app.can_delete_book')
