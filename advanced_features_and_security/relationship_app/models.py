@@ -1,9 +1,14 @@
 from django.db import models
 from django.db.models.signals import post_init, post_save
 from django.dispatch import receiver
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AbstractUser
 
 # Create your models here.
+
+
+class User(AbstractUser):
+    date_of_birth = models.DateField()
+    profile_photo = models.ImageField()
 
 
 class Author(models.Model):
@@ -48,7 +53,7 @@ class Librarian(models.Model):
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     role = models.CharField(max_length=50, choices=[
-        ('Admin', "administrator"), ('Librarian', "librarian"), ('Member',"member")])
+        ('Admin', "administrator"), ('Librarian', "librarian"), ('Member', "member")])
 
 
 @receiver(post_save, sender=User)
