@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-t1u8*2ba_tj=(wp=m35d_$c&7(x-pv*apn78l*aq-)=-o9!e2)'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -101,6 +101,15 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+#EXTRA SECURITY
+## X-XSS-Protection
+SECURE_BROWSER_XSS_FILTER = True
+## X-Frame-Options
+X_FRAME_OPTIONS = 'DENY'
+#X-Content-Type-Options
+SECURE_CONTENT_TYPE_NOSNIFF = True
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
 
 
 # Internationalization

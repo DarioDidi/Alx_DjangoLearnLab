@@ -1,2 +1,3 @@
 #Library Project
 backend project for library in django...
+Library website with a bookshelf app that allows CRUD operations on Book items , with relevant permissions
