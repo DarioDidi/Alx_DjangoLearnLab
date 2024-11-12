@@ -20,6 +20,7 @@ def create(request):
             return redirect("")
     else:
         form = ExampleForm
+    return render(request, 'form_example.html', {'form': form})
 
 
 @permission_required('bookshelf.can_edit', raise_exception=True)
