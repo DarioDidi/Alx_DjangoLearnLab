@@ -101,15 +101,24 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-#EXTRA SECURITY
-## X-XSS-Protection
+# EXTRA SECURITY
+# X-XSS-Protection
 SECURE_BROWSER_XSS_FILTER = True
-## X-Frame-Options
+# X-Frame-Options
 X_FRAME_OPTIONS = 'DENY'
-#X-Content-Type-Options
+# X-Content-Type-Options
 SECURE_CONTENT_TYPE_NOSNIFF = True
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
+
+# SECURE_SSL_REDIRECT: Set to True to redirect all non-HTTPS requests to HTTPS.
+# SECURE_HSTS_SECONDS: Set an appropriate value(e.g., 31536000 for one year) to instruct browsers to only access the site via HTTPS for the specified time.
+# SECURE_HSTS_INCLUDE_SUBDOMAINS and SECURE_HSTS_PRELOAD: Set to True to include all subdomains in the HSTS policy and to allow preloading.
+
+SECURE_SSL_REDIRECT = True
+SECURE_HSTS_SECONDS = 31536000
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
 
 
 # Internationalization
