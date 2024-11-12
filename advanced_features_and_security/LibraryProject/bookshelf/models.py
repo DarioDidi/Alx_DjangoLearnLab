@@ -1,3 +1,4 @@
+from django.apps import AppConfig
 from django.db import models
 from django.contrib.auth.models import AbstractUser, Permission, Group
 
@@ -53,21 +54,23 @@ def create_perm(tpl):
     Permission.objects.create(codename=cdnm, name=nm)
 
 
-permissions = map(create_perm, permissions)
+# class BookshelfConfig(AppConfig):
+    # def ready(self):
+    #     permissions = map(create_perm, permissions)
 
-Editors, created = Group.objects.get_or_create(name='Editors')
-Viewers, created = Group.objects.get_or_create(name='Viewers')
-Admins, created = Group.objects.get_or_create(name='Admins')
+    #     Editors, created = Group.objects.get_or_create(name='Editors')
+    #     Viewers, created = Group.objects.get_or_create(name='Viewers')
+    #     Admins, created = Group.objects.get_or_create(name='Admins')
 
-can_view_permission = Permission.objects.get(codename='can_view')
-can_create_permission = Permission.objects.get(codename='can_create')
-can_delete_permission = Permission.objects.get(codename='can_delete')
-can_edit_permission = Permission.objects.get(codename='can_edit')
+    #     can_view_permission = Permission.objects.get(codename='can_view')
+    #     can_create_permission = Permission.objects.get(codename='can_create')
+    #     can_delete_permission = Permission.objects.get(codename='can_delete')
+    #     can_edit_permission = Permission.objects.get(codename='can_edit')
 
-Editors.permissions.add(can_view_permission, can_edit_permission)
-Viewers.permissions.add(can_view_permission)
-Admins.permissions.add(can_view_permission, can_delete_permission,
-                       can_create_permission, can_edit_permission)
+    #     Editors.permissions.add(can_view_permission, can_edit_permission)
+    #     Viewers.permissions.add(can_view_permission)
+    #     Admins.permissions.add(can_view_permission, can_delete_permission,
+    #                            can_create_permission, can_edit_permission)
 
 
 class Book(models.Model):
