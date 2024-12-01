@@ -26,11 +26,12 @@ class ListView(generics.ListAPIView):
     search_fields = ['title', 'author', 'publication_year']
     ordering_fields = ['title', 'author', 'publication_year']
 
+# list all books
+
 
 class DetailView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     authentication_classes = [TokenAuthentication]
-
     model = Book
 
     def get_queryset(self):
@@ -38,6 +39,8 @@ class DetailView(generics.RetrieveAPIView):
             Book,
             pk=self.kwargs['pk'],
         )
+
+# auth users can create, update, delete books
 
 
 class CreateView(generics.CreateAPIView):
@@ -52,7 +55,6 @@ class UpdateView(generics.UpdateAPIView):
     permission_classes = [IsAuthenticated]
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    # lookup_field = "pk"
 
 
 class DeleteView(generics.DestroyAPIView):

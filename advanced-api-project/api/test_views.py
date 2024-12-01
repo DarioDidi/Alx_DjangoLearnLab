@@ -1,4 +1,4 @@
-import json 
+import json
 
 from rest_framework.test import APIRequestFactory
 from rest_framework.test import APITestCase, APIClient
@@ -22,6 +22,7 @@ class createBook(APITestCase):
         author = Author.objects.create(name='a1')
         author.save()
         self.author = author
+        # token for auth
         token, created = Token.objects.get_or_create(user=self.user)
         self.token = token
         book = Book.objects.get_or_create(
@@ -29,10 +30,12 @@ class createBook(APITestCase):
         print("book", book)
         self.book = book
 
+    # test user logged in
     def test_loggedin(self):
         self.assertTrue(self.client.login(
             username='user1', password='user1@pwd'))
 
+    # test book creation
     def test_creation(self):
         url = reverse('create')
         token, created = Token.objects.get_or_create(user=self.user)
@@ -43,8 +46,10 @@ class createBook(APITestCase):
                                     'Authorization': 'Token {}'.format(token)})
         print("CREATE", response.content)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.content.decode(), '{"id":2,"title":"book2","publication_year":2000,"author":1}')
+        self.assertEqual(response.content.decode(
+        ), '{"id":2,"title":"book2","publication_year":2000,"author":1}')
 
+    # test object updates
     def test_update(self):
         url = reverse('update', kwargs={'pk': 1})
         data = {'title': 'b1_v2', 'publication_year': 2010, 'author': 1}
@@ -54,12 +59,13 @@ class createBook(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         dat = dict(data)
         res = dict(json.loads(response.content.decode()))
-        self.assertEqual( dat['title'],res['title'] )
-        self.assertEqual( dat['publication_year'],res['publication_year'] )
+        self.assertEqual(dat['title'], res['title'])
+        self.assertEqual(dat['publication_year'], res['publication_year'])
 
+    #test object delete
     def test_delete(self):
         url = reverse('delete', kwargs={'pk': 1})
         response = self.client.delete(url, format='json',  headers={
             'Authorization': 'Token {}'.format(self.token)})
-        print("DELETE response:",response.content)
+        print("DELETE response:", response.content)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
