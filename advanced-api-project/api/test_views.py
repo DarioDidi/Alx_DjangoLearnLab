@@ -65,7 +65,14 @@ class createBook(APITestCase):
     #test object delete
     def test_delete(self):
         url = reverse('delete', kwargs={'pk': 1})
-        response = self.client.delete(url, format='json',  headers={
+        # response = self.client.delete(url, format='json',  headers={
+        #     'Authorization': 'Token {}'.format(self.token)})
+        # print("DELETE response:", response.content)
+        client = APIClient()
+        response = client.delete(path=url, format='json',  headers={
             'Authorization': 'Token {}'.format(self.token)})
         print("DELETE response:", response.content)
+        response.d
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(response.content.decode(
+        ), '')
