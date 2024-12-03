@@ -65,22 +65,23 @@ class PostListView(ListView):
 
 class PostDetailView(DetailView):
     model = Post
-    template_name = 'post_detail.html'
+    template_name = 'view.html'
     context_object_name = 'post'
 
 
 class PostCreateView(CreateView, mixins.LoginRequiredMixin, mixins.UserPassesTestMixin):
     model = Post
     form_class = CreateForm
-    template_name = 'post_form.html'
+    template_name = 'create.html'
 
 
 class PostUpdateView(UpdateView, mixins.LoginRequiredMixin, mixins.UserPassesTestMixin):
     model = Post
     form_class = UpdateForm
-    template_name = 'edit_post.html'
+    template_name = 'edit.html'
 
 
 class PostDeleteView(DeleteView, mixins.LoginRequiredMixin, mixins.UserPassesTestMixin):
     model = Post
     success_url = reverse_lazy('posts')
+    template_name = 'delete.html'
