@@ -60,28 +60,28 @@ class PostListView(ListView):
             posts = serialize('json', self.model.objects.get(
                 author=request.user).reverse()[:10])
         # return render(request, 'home.html', context={'posts': posts})
-        return render(request, 'list.html', context={'posts': posts})
+        return render(request, 'list_post.html', context={'posts': posts})
 
 
 class PostDetailView(DetailView):
     model = Post
-    template_name = 'view.html'
+    template_name = 'view_post.html'
     context_object_name = 'post'
 
 
 class PostCreateView(CreateView, mixins.LoginRequiredMixin, mixins.UserPassesTestMixin):
     model = Post
     form_class = CreateForm
-    template_name = 'create.html'
+    template_name = 'create_post.html'
 
 
 class PostUpdateView(UpdateView, mixins.LoginRequiredMixin, mixins.UserPassesTestMixin):
     model = Post
     form_class = UpdateForm
-    template_name = 'edit.html'
+    template_name = 'edit_post.html'
 
 
 class PostDeleteView(DeleteView, mixins.LoginRequiredMixin, mixins.UserPassesTestMixin):
     model = Post
     success_url = reverse_lazy('posts')
-    template_name = 'delete.html'
+    template_name = 'delete_post.html'
