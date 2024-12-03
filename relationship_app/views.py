@@ -3,9 +3,9 @@ from django.contrib.auth import login
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.core.serializers import serialize
+from django.views.generic import ListView
 
 from .models import *
-from django.views.generic import ListView
 from .forms import RegistrationForm
 # Create your views here.
 

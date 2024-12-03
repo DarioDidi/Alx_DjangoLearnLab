@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  {% if user.is_authenticated %}
+    <h1>posts in Blog:</h1>
+    <ul>
+      {% for post in posts %}
+        <li>{{ post.title }} by {{ post.author.name }} (Published {{ post.publication_date }})</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+  <a href="{% url 'posts' %}">Login to view blog</a>
+  {% endif %}
+{% endblock %}
