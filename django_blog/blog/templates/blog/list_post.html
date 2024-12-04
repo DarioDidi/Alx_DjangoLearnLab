@@ -1,0 +1,16 @@
+<!-- post_list.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Latest Posts</h1>
+  <ul>
+    {% for post in posts %}
+      <li>
+        <h2>{{ post.title }}</h2>
+        <p>{{ post.content|truncatewords:20 }}</p>
+      </li>
+    {% empty %}
+      <li>No posts available.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

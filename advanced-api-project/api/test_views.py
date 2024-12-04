@@ -35,16 +35,22 @@ class createBook(APITestCase):
         self.assertTrue(self.client.login(
             username='user1', password='user1@pwd'))
 
+    #test get details view
+    def test_get(self):
+        url = reverse('detail', kwargs={'pk': 1})
+        response = self.client.get(url, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['id'], 1)
+    
     # test book creation
     def test_creation(self):
         url = reverse('create')
-        token, created = Token.objects.get_or_create(user=self.user)
-        print(token)
 
         data = {'title': 'book2', 'publication_year': 2000, 'author': 1}
         response = self.client.post(url, data, format='json',  headers={
-                                    'Authorization': 'Token {}'.format(token)})
-        print("CREATE", response.content)
+                                    'Authorization': 'Token {}'.format(self.token)})
+
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.content.decode(
         ), '{"id":2,"title":"book2","publication_year":2000,"author":1}')
@@ -55,24 +61,16 @@ class createBook(APITestCase):
         data = {'title': 'b1_v2', 'publication_year': 2010, 'author': 1}
         response = self.client.put(url, data, format='json',  headers={
             'Authorization': 'Token {}'.format(self.token)})
-        print("UPDATE response response.data", response.content.decode())
+        
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        dat = dict(data)
-        res = dict(json.loads(response.content.decode()))
-        self.assertEqual(dat['title'], res['title'])
-        self.assertEqual(dat['publication_year'], res['publication_year'])
+        self.assertEqual(data['title'], response.data['title'])
+        self.assertEqual(data['publication_year'], response.data['publication_year'])
 
-    #test object delete
+    # test object delete
     def test_delete(self):
         url = reverse('delete', kwargs={'pk': 1})
-        # response = self.client.delete(url, format='json',  headers={
-        #     'Authorization': 'Token {}'.format(self.token)})
-        # print("DELETE response:", response.content)
-        client = APIClient()
-        response = client.delete(path=url, format='json',  headers={
+        response = self.client.delete(url, format='json',  headers={
             'Authorization': 'Token {}'.format(self.token)})
-        print("DELETE response:", response.content)
-        response.d
+        
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(response.content.decode(
-        ), '')
+        self.assertIsNone(response.data)

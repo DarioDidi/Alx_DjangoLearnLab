@@ -32,6 +32,6 @@
   </form>
 
   {# Assumes you set up the password_reset view in your URLconf #}
-  <p><a href="{% url 'password_reset' %}">Lost password?</a></p>
+  {% comment %} <p><a href="{% url 'password_reset' %}">Lost password?</a></p> {% endcomment %}
 
 {% endblock %}

@@ -33,12 +33,10 @@ class DetailView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     authentication_classes = [TokenAuthentication]
     model = Book
-
+    serializer_class = BookSerializer
+    
     def get_queryset(self):
-        return get_object_or_404(
-            Book,
-            pk=self.kwargs['pk'],
-        )
+        return Book.objects.filter(id=self.kwargs['pk'])
 
 # auth users can create, update, delete books
 
