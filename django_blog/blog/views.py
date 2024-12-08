@@ -155,18 +155,18 @@ class CommentDeleteView(DeleteView, mixins.LoginRequiredMixin, mixins.UserPasses
 
 #     def get_queryset(self):
 #         search_term = self.request.GET.get('search_term')
-#         title_q = Q(title__contains=search_term) if search_term else Q()
-#         content_q = Q(content__contains=search_term) if search_term else Q()
-#         tag_q = Q(tags__contains=search_term) if search_term else Q()
+#         title_q = Q(title__icontains=search_term) if search_term else Q()
+#         content_q = Q(content__icontains=search_term) if search_term else Q()
+#         tag_q = Q(tags__icontains=search_term) if search_term else Q()
 #         combined_q = title_q & content_q & tag_q
 #         return Post.objects.filter(combined_q)
 
 
 def search_view(request):
     search_term = request.GET.get('search_term')
-    title_q = Q(title__contains=search_term) if search_term else Q()
-    content_q = Q(content__contains=search_term) if search_term else Q()
-    tag_q = Q(tags__contains=search_term) if search_term else Q()
+    title_q = Q(title__icontains=search_term) if search_term else Q()
+    content_q = Q(content__icontains=search_term) if search_term else Q()
+    tag_q = Q(tags__icontains=search_term) if search_term else Q()
     combined_q = title_q & content_q & tag_q
 
     if search_term:
@@ -180,4 +180,4 @@ class TagPostView(ListView):
 
     def get_queryset(self):
         tag = self.kwargs['tag']  # retrieve the tag slug from the URL
-        return Post.objects.filter(Q(tags__contains=tag))
+        return Post.objects.filter(Q(tags__icontains=tag))
