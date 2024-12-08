@@ -180,4 +180,4 @@ class TagPostView(ListView):
 
     def get_queryset(self):
         tag = self.kwargs['tag']  # retrieve the tag slug from the URL
-        return Post.objects.filter(Q(tags__icontains=tag))
+        return Post.objects.filter(Q(tags__name__icontains=tag))
