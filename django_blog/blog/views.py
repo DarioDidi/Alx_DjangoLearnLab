@@ -74,26 +74,26 @@ class PostListView(ListView):
 
 class PostDetailView(DetailView):
     model = Post
-    template_name = 'blog/view_post.html'
+    template_name = 'blog/post_detail.html'
     context_object_name = 'post'
 
 
 class PostCreateView(CreateView, mixins.LoginRequiredMixin, mixins.UserPassesTestMixin):
     model = Post
     form_class = CreatePostForm
-    template_name = 'blog/create_post.html'
+    template_name = 'blog/post_create.html'
 
 
 class PostUpdateView(UpdateView, mixins.LoginRequiredMixin, mixins.UserPassesTestMixin):
     model = Post
     form_class = UpdateForm
-    template_name = 'blog/edit_post.html'
+    template_name = 'blog/post_edit.html'
 
 
 class PostDeleteView(DeleteView, mixins.LoginRequiredMixin, mixins.UserPassesTestMixin):
     model = Post
     success_url = reverse_lazy('posts')
-    template_name = 'blog/delete_post.html'
+    template_name = 'blog/post_delete.html'
 
 
 class CommentListView(ListView):
@@ -106,7 +106,7 @@ class CommentListView(ListView):
             posts = serialize('json', self.model.objects.get(
                 post=request.post))  # .reverse()[:10])
         # return render(request, 'home.html', context={'posts': posts})
-        return render(request, 'blog/list_post.html', context={'comments': comments})
+        return render(request, 'blog/comment_list.html', context={'comments': comments})
 
 
 class CommentDetailView(DetailView, mixins.LoginRequiredMixin, mixins.UserPassesTestMixin):
