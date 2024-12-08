@@ -6,7 +6,7 @@ from django.contrib.auth.forms import UserCreationForm
 
 from taggit.forms import TagField, TagWidget
 
-from .models import UserProfile, Post, Comment, Tag
+from .models import UserProfile, Post, Comment
 
 
 class UserCreationForm(UserCreationForm):
