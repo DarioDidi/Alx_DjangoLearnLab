@@ -1,5 +1,6 @@
 from django.urls import path
-from blog.views import PostListView, PostCreateView, PostDetailView, PostUpdateView, PostDeleteView, DisplayPosts, profile, register
+# from blog.views import PostListView, PostCreateView, PostDetailView, PostUpdateView, PostDeleteView, DisplayPosts, profile, register
+from blog.views import *
 from django.contrib.auth.views import LoginView, LogoutView
 
 
@@ -10,9 +11,17 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name='logout'),
     path('profile/', profile, name='profile'),
     path('posts/', PostListView.as_view(), name='posts'),
-    path('post/new', PostCreateView.as_view(), name='create'),
+    path('post/new', PostCreateView.as_view(), name='create_post'),
     path('post/<int:pk>/', PostDetailView.as_view(), name='post_detail'),
-    path('post/<int:pk>/update', PostUpdateView.as_view(), name='update'),
-    path('post/<int:pk>/delete', PostDeleteView.as_view(), name='delete'),
+    path('post/<int:pk>/update', PostUpdateView.as_view(), name='update_post'),
+    path('post/<int:pk>/delete', PostDeleteView.as_view(), name='delete_post'),
+    path('/posts/<int:post_id>/comments/new/',
+         CommentCreateView.as_view(), name='create_comment'),
+    path('/posts/<int:post_id>/comments/<int:comment_id>/update/',
+         CommentUpdateView.as_view(), name='update_comment'),
+    path('/posts/<int:post_id>/comments/<int:comment_id>/delete/',
+         CommentDeleteView.as_view(), name='delete_comment'),
+    path('/posts/<int:post_id>/comments/<int:comment_id>/',
+         CommentDetailView.as_view(), name='view_comment'),
 ]
 #  ["post/<int:pk>/delete/", "post/<int:pk>/update/", "post/new/"

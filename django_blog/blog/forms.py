@@ -73,7 +73,7 @@ class CommentForm(forms.ModelForm):
         if not self.request.user:
             raise InvalidDataException('No user provided')
         instance.user = self.request.user  # assuming self.request.user is available
-        instance.updated_at = datetime.now()
+        # instance.updated_at = datetime.now()
         if commit:
             instance.save()
         return instance

@@ -6,6 +6,9 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+
 from .forms import UserCreationForm, UpdateForm, CreateForm, CommentForm
 from .models import Post, Comment
 
@@ -99,6 +102,22 @@ class CommentListView(ListView):
         # return render(request, 'home.html', context={'posts': posts})
         return render(request, 'blog/list_post.html', context={'comments': comments})
 
-class CommentDetailView(DetailView):
+
+class CommentDetailView(DetailView, mixins.LoginRequiredMixin, mixins.UserPassesTestMixin):
     form_class = CommentForm
     template_name = 'blog/comment_detail.html'
+
+
+class CommentCreateView(CreateView, mixins.LoginRequiredMixin, mixins.UserPassesTestMixin):
+    form_class = CommentForm
+    template_name = 'blog/comment_create.html'
+
+
+class CommentUpdateView(UpdateView, mixins.LoginRequiredMixin, mixins.UserPassesTestMixin):
+    form_class = CommentForm
+    template_name = 'blog/comment_update.html'
+
+
+class CommentDeleteView(DeleteView, mixins.LoginRequiredMixin, mixins.UserPassesTestMixin):
+    form_class = CommentForm
+    template_name = 'blog/comment_delete.html'
