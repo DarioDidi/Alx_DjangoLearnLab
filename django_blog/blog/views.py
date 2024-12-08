@@ -2,6 +2,7 @@ from .forms import UserUpdateForm, ProfileUpdateForm
 from django.core.serializers import serialize
 from django.contrib.auth import login, mixins
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
@@ -106,18 +107,36 @@ class CommentListView(ListView):
 class CommentDetailView(DetailView, mixins.LoginRequiredMixin, mixins.UserPassesTestMixin):
     form_class = CommentForm
     template_name = 'blog/comment_detail.html'
-
+    
 
 class CommentCreateView(CreateView, mixins.LoginRequiredMixin, mixins.UserPassesTestMixin):
     form_class = CommentForm
     template_name = 'blog/comment_create.html'
 
+    def dispatch(self, request, *args, **kwargs):
+        comment = self.get_object()
+        if request.user != comment.post.author:
+            return HttpResponseForbidden("You do not have permission to access this resource.")
+        return super().dispatch(request, *args, **kwargs)
+
 
 class CommentUpdateView(UpdateView, mixins.LoginRequiredMixin, mixins.UserPassesTestMixin):
     form_class = CommentForm
     template_name = 'blog/comment_update.html'
+    success_url = reverse_lazy('blog_post_detail') 
+    def dispatch(self, request, *args, **kwargs):
+        comment = self.get_object()
+        if request.user != comment.post.author:
+            return HttpResponseForbidden("You do not have permission to access this resource.")
+        return super().dispatch(request, *args, **kwargs)
 
 
 class CommentDeleteView(DeleteView, mixins.LoginRequiredMixin, mixins.UserPassesTestMixin):
     form_class = CommentForm
     template_name = 'blog/comment_delete.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        comment = self.get_object()
+        if request.user != comment.post.author:
+            return HttpResponseForbidden("You do not have permission to access this resource.")
+        return super().dispatch(request, *args, **kwargs)

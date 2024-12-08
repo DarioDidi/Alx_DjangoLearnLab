@@ -12,15 +12,4 @@
   {% else %}
     <p>Log in to add a comment!</p>
   {% endif %}
-
-  {% if comments %}
-    <ul>
-      {% for comment in comments %}
-        <li>{{ comment.author }} ({{ comment.created_at }})
-          {{ comment.content|safe }}</li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <p>No comments yet...</p>
-  {% endif %}
 {% endblock %}
