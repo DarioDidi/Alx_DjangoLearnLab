@@ -4,7 +4,9 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 
-from .models import UserProfile, Post, Comment
+from taggit.forms import TagField
+
+from .models import UserProfile, Post, Comment, Tag
 
 
 class UserCreationForm(UserCreationForm):
@@ -33,10 +35,12 @@ class InvalidDataException(forms.ValidationError):
     pass
 
 
-class CreateForm(forms.ModelForm):
+class CreatePostForm(forms.ModelForm):
+    tags = TagField()
+
     class Meta:
         model = Post
-        fields = ['title', 'content', 'author']
+        fields = ['title', 'content', 'tags']
 
     # def __init__(self, *args, **kwargs):
     #     super().__init__(*args, **kwargs)
@@ -47,9 +51,18 @@ class CreateForm(forms.ModelForm):
 
     def save(self, commit=True):
         instance = super().save(commit=False)
+        # ensure a user is present
         if not self.request.user:
             raise InvalidDataException('No user provided')
-        instance.user = self.request.user  # assuming self.request.user is available
+        instance.author = self.request.user
+
+        # create new tags if not already in DB
+        tags = self.cleaned_data['tags']
+        for tag in tags:
+            if not tag.pk:
+                tag.save()
+        instance.tags.add(*tags)
+
         if commit:
             instance.save()
         return instance
@@ -68,17 +81,18 @@ class ProfileUpdateForm(forms.ModelForm):
 
 
 class CommentForm(forms.ModelForm):
+
     def save(self, commit=True):
         instance = super().save(commit=False)
+
         if not self.request.user:
             raise InvalidDataException('No user provided')
-        instance.user = self.request.user  # assuming self.request.user is available
-        # instance.updated_at = datetime.now()
+        instance.user = self.request.user
+
         if commit:
             instance.save()
         return instance
 
     class Meta:
         model = Comment
-        fields = ['content']
-
+        fields = ['content', ]
