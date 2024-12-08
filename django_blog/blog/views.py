@@ -6,8 +6,8 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 
-from .forms import UserCreationForm, UpdateForm, CreateForm
-from .models import Post
+from .forms import UserCreationForm, UpdateForm, CreateForm, CommentForm
+from .models import Post, Comment
 
 
 def register(request):
@@ -20,7 +20,7 @@ def register(request):
             return redirect('login')
     else:
         form = UserCreationForm()
-    return render(request, 'register.html', {'form': form})
+    return render(request, 'blog/register.html', {'form': form})
     # return render(request, 'blog/register.html', {'form': UserCreationForm})# views.py
 
 
@@ -39,7 +39,7 @@ def profile(request):
         p_form = ProfileUpdateForm(instance=request.user.profile)
 
     context = {'u_form': u_form, 'p_form': p_form}
-    return render(request, 'profile.html', context)
+    return render(request, 'blog/profile.html', context)
 
 
 class DisplayPosts(ListView):
@@ -47,7 +47,7 @@ class DisplayPosts(ListView):
 
     def get(self, request):
         posts = serialize('json', self.model.objects.all().reverse()[:10])
-        return render(request, 'home.html', context={'posts': posts})
+        return render(request, 'blog/home.html', context={'posts': posts})
 
 
 class PostListView(ListView):
@@ -60,28 +60,45 @@ class PostListView(ListView):
             posts = serialize('json', self.model.objects.get(
                 author=request.user).reverse()[:10])
         # return render(request, 'home.html', context={'posts': posts})
-        return render(request, 'list_post.html', context={'posts': posts})
+        return render(request, 'blog/list_post.html', context={'posts': posts})
 
 
 class PostDetailView(DetailView):
     model = Post
-    template_name = 'view_post.html'
+    template_name = 'blog/view_post.html'
     context_object_name = 'post'
 
 
 class PostCreateView(CreateView, mixins.LoginRequiredMixin, mixins.UserPassesTestMixin):
     model = Post
     form_class = CreateForm
-    template_name = 'create_post.html'
+    template_name = 'blog/create_post.html'
 
 
 class PostUpdateView(UpdateView, mixins.LoginRequiredMixin, mixins.UserPassesTestMixin):
     model = Post
     form_class = UpdateForm
-    template_name = 'edit_post.html'
+    template_name = 'blog/edit_post.html'
 
 
 class PostDeleteView(DeleteView, mixins.LoginRequiredMixin, mixins.UserPassesTestMixin):
     model = Post
     success_url = reverse_lazy('posts')
-    template_name = 'delete_post.html'
+    template_name = 'blog/delete_post.html'
+
+
+class CommentListView(ListView):
+    model = Comment
+
+    def get(self, request):
+        print('REQUEST', request)
+        comments = {}
+        if request.user.is_authenticated:
+            posts = serialize('json', self.model.objects.get(
+                post=request.post))  # .reverse()[:10])
+        # return render(request, 'home.html', context={'posts': posts})
+        return render(request, 'blog/list_post.html', context={'comments': comments})
+
+class CommentDetailView(DetailView):
+    form_class = CommentForm
+    template_name = 'blog/comment_detail.html'

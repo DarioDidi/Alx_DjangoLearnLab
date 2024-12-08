@@ -1,8 +1,10 @@
+from datetime import datetime
+
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 
-from .models import UserProfile, Post
+from .models import UserProfile, Post, Comment
 
 
 class UserCreationForm(UserCreationForm):
@@ -26,8 +28,10 @@ class UserUpdateForm(forms.ModelForm):
         model = User
         fields = ['username', 'email']
 
+
 class InvalidDataException(forms.ValidationError):
     pass
+
 
 class CreateForm(forms.ModelForm):
     class Meta:
@@ -61,3 +65,20 @@ class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = ['image', "email"]
+
+
+class CommentForm(forms.ModelForm):
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if not self.request.user:
+            raise InvalidDataException('No user provided')
+        instance.user = self.request.user  # assuming self.request.user is available
+        instance.updated_at = datetime.now()
+        if commit:
+            instance.save()
+        return instance
+
+    class Meta:
+        model = Comment
+        fields = ['content']
+
