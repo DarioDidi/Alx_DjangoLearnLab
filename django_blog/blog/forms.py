@@ -4,7 +4,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 
-from taggit.forms import TagField
+from taggit.forms import TagField, TagWidget
 
 from .models import UserProfile, Post, Comment, Tag
 
@@ -42,12 +42,15 @@ class CreatePostForm(forms.ModelForm):
         model = Post
         fields = ['title', 'content', 'tags']
 
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-    #     self.fields['author'].queryset = User.objects.filter(
-    #         id=kwargs.pop('user_id', None))
-    #     if not self.instance.pk:
-    #         self.initial['author'] = self.fields['author'].queryset.first()
+        widgets = {
+            'tags': TagWidget(),
+        }
+ # def __init__(self, *args, **kwargs):
+ #     super().__init__(*args, **kwargs)
+ #     self.fields['author'].queryset = User.objects.filter(
+ #         id=kwargs.pop('user_id', None))
+ #     if not self.instance.pk:
+ #         self.initial['author'] = self.fields['author'].queryset.first()
 
     def save(self, commit=True):
         instance = super().save(commit=False)
@@ -58,9 +61,9 @@ class CreatePostForm(forms.ModelForm):
 
         # create new tags if not already in DB
         tags = self.cleaned_data['tags']
-        for tag in tags:
-            if not tag.pk:
-                tag.save()
+        # for tag in tags:
+        #     if not tag.pk:
+        #         tag.save()
         instance.tags.add(*tags)
 
         if commit:
