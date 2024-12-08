@@ -16,6 +16,9 @@ from .forms import UserCreationForm, UpdateForm, CreatePostForm, CommentForm
 from .models import Post, Comment
 
 
+# from django.contrib.auth.views import LoginView, LogoutView
+
+
 def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)

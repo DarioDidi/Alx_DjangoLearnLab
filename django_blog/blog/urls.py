@@ -3,6 +3,9 @@ from django.urls import path
 from blog.views import *
 from django.contrib.auth.views import LoginView, LogoutView
 
+LoginView.template_name = 'blog/registration/login.html'
+LogoutView.template_name = 'blog/registration/logout.html'
+
 
 urlpatterns = [
     path('', DisplayPosts.as_view(), name='home'),
@@ -23,7 +26,7 @@ urlpatterns = [
          CommentDeleteView.as_view(), name='delete_comment'),
     path('comment/<int:pk>/',
          CommentDetailView.as_view(), name='view_comment'),
-    path('tags/<slug:tag_slug>//',
+    path('tags/<slug:tag_slug>/',
          PostByTagListView.as_view(), name='tag_posts'),
 ]
 
