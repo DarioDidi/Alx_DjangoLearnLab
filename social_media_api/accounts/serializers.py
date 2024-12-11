@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate
+from django.contrib.auth import get_user_model
 
 from rest_framework.authtoken.models import Token
 from rest_framework import serializers
@@ -15,14 +16,16 @@ class CustomUserSerializer(serializers.ModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        user = CustomUser(**validated_data)
-        user.set_password(validated_data['password'])
-        user.save()
-        token, created = Token.objects.get_or_create(user=user)
+        # user = CustomUser(**validated_data)
+        # user.set_password(validated_data['password'])
+        # user.save()
+        user = get_user_model().objects.create_user(**validated_data)
+        token, created = Token.objects.create(user=user)
         return {'user': user, 'token': token.key}
 
 
 class LoginSerializer(serializers.Serializer):
+    # username = serializers.CharField(max_length=255)
     username = serializers.CharField(max_length=255)
     password = serializers.CharField(max_length=255, write_only=True)
 
