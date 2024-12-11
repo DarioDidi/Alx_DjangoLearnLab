@@ -9,7 +9,7 @@ from django.dispatch import receiver
 class CustomUser(AbstractUser):
     bio = models.TextField(max_length=200)
     profile_picture = models.ImageField()
-    followers = models.ManyToManyField(symmetrical=False)
+    followers = models.ManyToManyField('self', symmetrical=False)
     email = models.EmailField(unique=True)
 
 
