@@ -1,11 +1,12 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser
+# from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.models import AbstractUser
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 # Create your models here.
 
 
-class CustomUser(AbstractBaseUser):
+class CustomUser(AbstractUser):
     bio = models.TextField(max_length=200)
     profile_picture = models.ImageField()
     followers = models.ManyToManyField(symmetrical=False)
