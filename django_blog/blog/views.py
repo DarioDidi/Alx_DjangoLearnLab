@@ -19,7 +19,7 @@ from .models import Post, Comment
 # from django.contrib.auth.views import LoginView, LogoutView
 
 
-def register(request):
+def register(request):    
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
