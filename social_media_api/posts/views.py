@@ -6,6 +6,7 @@ from django.shortcuts import render
 from rest_framework import filters
 from rest_framework import generics
 from rest_framework import status
+from rest_framework import viewsets
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -18,6 +19,11 @@ class PostPagination(PageNumberPagination):
     page_size = 10  # Adjust the page size as needed
     page_size_query_param = 'page_size'
     max_page_size = 100
+
+
+# class PostViewSet(viewsets.ModelViewSet):
+#     queryset = Post.objects.all()
+#     serializer_class = PostSerializer
 
 
 class PostListView(generics.ListAPIView):
