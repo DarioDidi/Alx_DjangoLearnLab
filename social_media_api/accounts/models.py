@@ -7,7 +7,8 @@ from django.dispatch import receiver
 
 
 class CustomUser(AbstractUser):
-    bio = models.TextField(max_length=200)
+    # bio = models.TextField(max_length=200)
+    bio = models.TextField()
     profile_picture = models.ImageField()
     followers = models.ManyToManyField('self', symmetrical=False)
     email = models.EmailField(unique=True)
