@@ -2,10 +2,14 @@ from django.contrib.auth import authenticate
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404, redirect
 
+from rest_framework.decorators import permission_classes
+from rest_framework import permissions
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.decorators import api_view
+# from rest_framework.generics import GenericAPIView
+from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -13,6 +17,7 @@ from rest_framework.views import APIView
 from .serializers import CustomUserSerializer, LoginSerializer, UserProfileSerializer
 from .models import CustomUser, UserProfile
 
+"CustomUser.objects.all()"
 
 @api_view(['POST'])
 def register(request):
@@ -53,7 +58,8 @@ class CustomAuthToken(ObtainAuthToken):
         })
 
 
-class UserProfileUpdateView(APIView):
+# class UserProfileUpdateView(APIView):
+class UserProfileUpdateView(generics.GenericAPIView):
     def put(self, request, pk):
         user_profile = UserProfile.objects.get(pk=pk)
         serializer = UserProfileSerializer(
@@ -64,15 +70,41 @@ class UserProfileUpdateView(APIView):
         return Response(serializer.errors, status=400)
 
 
+@api_view(['POST'])
+@permission_classes((permissions.IsAuthenticated, ))
 def follow_user(request, pk):
     user_to_follow = get_object_or_404(CustomUser, id=pk)
     if not request.user.following.filter(id=pk).exists():
         request.user.following.add(user_to_follow)
-        followers.add(user_to_follow)
-    return redirect('profile_page')
+        user_to_follow.followers.add(request.user)
+    return redirect('profile')
 
 
+class FollowView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, pk):
+        user_to_follow = get_object_or_404(CustomUser, id=pk)
+        if not request.user.following.filter(id=pk).exists():
+            request.user.following.add(user_to_follow)
+            user_to_follow.followers.add(request.user)
+        return redirect('profile')
+
+
+@api_view(['POST'])
+@permission_classes((permissions.IsAuthenticated, ))
 def unfollow_user(request, user_id):
     user_to_unfollow = get_object_or_404(CustomUser, id=user_id)
     request.user.following.remove(user_to_unfollow)
-    return redirect('profile_page')
+    user_to_unfollow.followers.remove(request.user)
+    return redirect('profile')
+
+
+class UnfollowView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, user_id):
+        user_to_unfollow = get_object_or_404(CustomUser, id=user_id)
+        request.user.following.remove(user_to_unfollow)
+        user_to_unfollow.followers.remove(request.user)
+        return redirect('profile')

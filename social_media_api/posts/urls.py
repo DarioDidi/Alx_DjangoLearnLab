@@ -22,4 +22,5 @@ urlpatterns = [
          CommentDetailView.as_view(), name='view_comment'),
     #     path('tags/<slug:tag_slug>/',
     #          PostByTagListView.as_view(), name='tag_posts'),
+    path('feed/', FeedView.as_view(), name='feed'),
 ]

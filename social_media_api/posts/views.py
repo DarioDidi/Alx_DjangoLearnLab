@@ -40,7 +40,7 @@ class PostListView(generics.ListAPIView):
         return Response(serializer.data)
 
 
-class PostCreateView(APIView, mixins.LoginRequiredMixin, mixins.UserPassesTestMixin):
+class PostCreateView(generics.CreateAPIView, mixins.LoginRequiredMixin, mixins.UserPassesTestMixin):
     serializer_class = PostSerializer
 
     def post(self, request):
@@ -51,7 +51,7 @@ class PostCreateView(APIView, mixins.LoginRequiredMixin, mixins.UserPassesTestMi
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class PostUpdateView(APIView, mixins.LoginRequiredMixin, mixins.UserPassesTestMixin):
+class PostUpdateView(generics.UpdateAPIView, mixins.LoginRequiredMixin, mixins.UserPassesTestMixin):
     def post(self, request):
         serializer = PostSerializer(data=request.data, partial=True)
         if serializer.is_valid():
@@ -62,7 +62,7 @@ class PostUpdateView(APIView, mixins.LoginRequiredMixin, mixins.UserPassesTestMi
         return Response(serializer.errors, status=400)
 
 
-class PostDetailView(APIView):
+class PostDetailView(generics.ListAPIView):
     def get(self, request):
         # Handle GET request
         post = Post.objects.get(id=request.data['id'])
@@ -70,7 +70,7 @@ class PostDetailView(APIView):
         return Response(serializer.data)
 
 
-class PostDeleteView(generics.DeleteAPIView, mixins.LoginRequiredMixin, mixins.UserPassesTestMixin):
+class PostDeleteView(generics.DestroyAPIView, mixins.LoginRequiredMixin, mixins.UserPassesTestMixin):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
@@ -101,7 +101,7 @@ class CommentPagination(PageNumberPagination):
     max_page_size = 100
 
 
-class CommentListView(generics.APIView):
+class CommentListView(generics.ListAPIView):
     pagination_class = CommentPagination
     filter_backends = [filters.SearchFilter]
 
@@ -148,7 +148,7 @@ class CommentDetailView(APIView):
         return Response(serializer.data)
 
 
-class CommentDeleteView(generics.DeleteAPIView, mixins.LoginRequiredMixin, mixins.UserPassesTestMixin):
+class CommentDeleteView(generics.DestroyAPIView, mixins.LoginRequiredMixin, mixins.UserPassesTestMixin):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
 
@@ -158,3 +158,14 @@ class CommentDeleteView(generics.DeleteAPIView, mixins.LoginRequiredMixin, mixin
             comment.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class FeedView(generics.ListAPIView, mixins.LoginRequiredMixin, mixins.UserPassesTestMixin):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+
+    def get_queryset(self):
+        return Post.objects.filter(author__in=self.request.user.following.all())
+    # (self, request):
+    #     posts = Post.objects.filter(author__in=request.user.following.all())
+    #     return
