@@ -5,6 +5,7 @@ from django.shortcuts import render
 
 from rest_framework import filters
 from rest_framework import generics
+from rest_framework import permissions
 from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.pagination import PageNumberPagination
@@ -160,12 +161,15 @@ class CommentDeleteView(generics.DestroyAPIView, mixins.LoginRequiredMixin, mixi
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-class FeedView(generics.ListAPIView, mixins.LoginRequiredMixin, mixins.UserPassesTestMixin):
+# class FeedView(generics.ListAPIView, mixins.LoginRequiredMixin, mixins.UserPassesTestMixin):
+class FeedView(generics.ListAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-
+    permission_classes = [permissions.IsAuthenticated]
     def get_queryset(self):
-        return Post.objects.filter(author__in=self.request.user.following.all())
+        following_users = self.request.user.followers.all()
+        return Post.objects.filter(author__in=following_users).order_by('-creation_date')
+
     # (self, request):
     #     posts = Post.objects.filter(author__in=request.user.following.all())
     #     return
