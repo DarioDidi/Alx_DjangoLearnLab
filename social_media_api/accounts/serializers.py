@@ -9,6 +9,8 @@ from .models import CustomUser, UserProfile
 
 class CustomUserSerializer(serializers.ModelSerializer):
     profile_pucture = serializers.ImageField()
+    followers = serializers.SerializerMethodField()
+    following = serializers.SerializerMethodField()
 
     class Meta:
         model = CustomUser
@@ -37,6 +39,7 @@ class LoginSerializer(serializers.Serializer):
             attrs['user'] = user
             return attrs
         raise serializers.ValidationError('Invalid credentials')
+
 
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:

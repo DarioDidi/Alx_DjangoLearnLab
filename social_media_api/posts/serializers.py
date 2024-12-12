@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from .models import Post, Comment
-from ..accounts.serializers import CustomUserSerializer
+from accounts.serializers import CustomUserSerializer
 
 
 class PostSerializer(serializers.ModelSerializer):

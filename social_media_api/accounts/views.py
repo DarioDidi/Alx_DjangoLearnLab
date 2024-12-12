@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate
 from django.shortcuts import render
+from django.shortcuts import get_object_or_404, redirect
 
 from rest_framework import status
 from rest_framework.authtoken.models import Token
@@ -7,9 +8,11 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
 # Create your views here.
 from .serializers import CustomUserSerializer, LoginSerializer, UserProfileSerializer
 from .models import CustomUser, UserProfile
+
 
 @api_view(['POST'])
 def register(request):
@@ -53,8 +56,23 @@ class CustomAuthToken(ObtainAuthToken):
 class UserProfileUpdateView(APIView):
     def put(self, request, pk):
         user_profile = UserProfile.objects.get(pk=pk)
-        serializer = UserProfileSerializer(user_profile, data=request.data, partial=True)
+        serializer = UserProfileSerializer(
+            user_profile, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=400)
+
+
+def follow_user(request, pk):
+    user_to_follow = get_object_or_404(CustomUser, id=pk)
+    if not request.user.following.filter(id=pk).exists():
+        request.user.following.add(user_to_follow)
+        followers.add(user_to_follow)
+    return redirect('profile_page')
+
+
+def unfollow_user(request, user_id):
+    user_to_unfollow = get_object_or_404(CustomUser, id=user_id)
+    request.user.following.remove(user_to_unfollow)
+    return redirect('profile_page')

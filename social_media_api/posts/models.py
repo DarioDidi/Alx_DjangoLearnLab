@@ -1,7 +1,7 @@
 from django.db import models
 
 # Create your models here.
-from accounts.models import CustomUser
+from accounts.models import CustomUser # type: ignore
 
 
 class Post(models.Model):

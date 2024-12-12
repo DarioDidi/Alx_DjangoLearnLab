@@ -10,7 +10,9 @@ class CustomUser(AbstractUser):
     # bio = models.TextField(max_length=200)
     bio = models.TextField()
     profile_picture = models.ImageField()
-    followers = models.ManyToManyField('self', symmetrical=False)
+    followers = models.ManyToManyField('self', symmetrical=False, related_name='followers')
+    following = models.ManyToManyField('self', symmetrical=False, related_name='followers')
+
     email = models.EmailField(unique=True)
 
 
