@@ -1,6 +1,8 @@
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth import mixins
+from django.dispatch import receiver
 from django.db.models import Q
+from django.db.models.signals import post_save, post_delete
 from django.shortcuts import get_object_or_404
 
 from rest_framework import filters
@@ -15,6 +17,7 @@ from rest_framework.views import APIView
 from .serializers import PostSerializer, CommentSerializer, LikeSerializer
 from .models import Post, Comment, Like
 
+from notifications.models import Notification
 
 class PostPagination(PageNumberPagination):
     page_size = 10  # Adjust the page size as needed
@@ -183,9 +186,18 @@ class LikePostView(generics.CreateAPIView):
     serializer_class = LikeSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    # def post(self, request):
+    #     post_id = self.kwargs['pk']
+    #     # post = get_object_or_404(Post, pk=post_id)
+    #     post = generics.get_object_or_404(Post, pk=post_id)
+    #     Like.objects.get_or_create(user=self.request.user, post=post)
+    #     return Response(status=status.HTTP_201_CREATED)
+        
     def perform_create(self, serializer):
-        post_id = self.kwargs['post_id']
-        post = get_object_or_404(Post, pk=post_id)
+        post_id = self.kwargs['pk']
+        # post = get_object_or_404(Post, pk=post_id)
+        post = generics.get_object_or_404(Post, pk=post_id)
+        Like.objects.get_or_create(user=self.request.user, post=post)
         if Like.objects.filter(user=self.request.user, post=post).exists():
             # User has already liked this post, return a 400 error
             return Response({'error': 'You have already liked this post'}, status=status.HTTP_400_BAD_REQUEST)
@@ -206,3 +218,35 @@ class LikePostView(generics.CreateAPIView):
     #         serializer.save()
     #         return Response(serializer.data, status=status.HTTP_201_CREATED)
     #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# class UnlikePostView(GenericAPIView, DestroyModelMixin):
+
+
+@receiver(post_save, sender=Like)
+def send_like_notification(sender, instance, **kwargs):
+    liker = instance.user
+    post = instance.post
+    
+    # Create a notification
+    Notification.objects.create(
+        user=liker,  # recipient
+        message=f"{liker.username} liked your post: {post.title}",  # notification message
+        link=post.get_absolute_url()  # link to the post
+    )
+
+
+class UnlikePostView(generics.DestroyAPIView):
+    queryset = Like.objects.all()
+    serializer_class = LikeSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def delete(self, request, pk):
+        like = get_object_or_404(Like, post__pk=pk, user=request.user)
+        like.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+# @receiver(post_delete, sender=Like)
+# def send_unlike_notification(sender, instance, **kwargs):
+#     # Send a notification to the post author and/or other interested parties
+#     pass
