@@ -1,7 +1,7 @@
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth import mixins
 from django.db.models import Q
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404
 
 from rest_framework import filters
 from rest_framework import generics
@@ -12,8 +12,8 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .serializers import PostSerializer, CommentSerializer
-from .models import Post, Comment
+from .serializers import PostSerializer, CommentSerializer, LikeSerializer
+from .models import Post, Comment, Like
 
 
 class PostPagination(PageNumberPagination):
@@ -166,6 +166,7 @@ class FeedView(generics.ListAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticated]
+
     def get_queryset(self):
         following_users = self.request.user.followers.all()
         return Post.objects.filter(author__in=following_users).order_by('-creation_date')
@@ -173,3 +174,35 @@ class FeedView(generics.ListAPIView):
     # (self, request):
     #     posts = Post.objects.filter(author__in=request.user.following.all())
     #     return
+
+# class LikePostView(GenericAPIView, CreateModelMixin):
+
+
+class LikePostView(generics.CreateAPIView):
+    queryset = Like.objects.all()
+    serializer_class = LikeSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        post_id = self.kwargs['post_id']
+        post = get_object_or_404(Post, pk=post_id)
+        if Like.objects.filter(user=self.request.user, post=post).exists():
+            # User has already liked this post, return a 400 error
+            return Response({'error': 'You have already liked this post'}, status=status.HTTP_400_BAD_REQUEST)
+        # serializer.save(post=post)
+        # return Response({'message': 'Liked successfully'}, status=status.HTTP_201_CREATED)
+        serializer = self.get_serializer(
+            data={'post': post, 'user': self.request.user})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # def post(self, request, pk):
+    #     post = get_object_or_404(Post, pk=pk)
+    #     serializer = self.get_serializer(
+    #         data={'post': post, 'user': request.user})
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

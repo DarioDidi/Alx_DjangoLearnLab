@@ -1,7 +1,7 @@
 from django.db import models
+from django.conf import settings
 
-# Create your models here.
-from accounts.models import CustomUser # type: ignore
+from accounts.models import CustomUser  # type: ignore
 
 
 class Post(models.Model):
@@ -21,3 +21,11 @@ class Comment(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 
+class Like(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE)
+    post = models.ForeignKey('Post', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ['post', 'user']
