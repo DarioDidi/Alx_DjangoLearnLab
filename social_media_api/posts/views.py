@@ -187,10 +187,10 @@ class LikePostView(generics.CreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     # def post(self, request):
-    #     post_id = self.kwargs['pk']
-    #     # post = get_object_or_404(Post, pk=post_id)
+    #     pk = self.kwargs['pk']
+    #     # post = get_object_or_404(Post, pk=pk)
     #     post = generics.get_object_or_404(Post, pk=post_id)
-    #     Like.objects.get_or_create(user=self.request.user, post=post)
+    #     Like.objects.get_or_create(user=request.user, post=post)
     #     return Response(status=status.HTTP_201_CREATED)
         
     def perform_create(self, serializer):
@@ -250,3 +250,5 @@ class UnlikePostView(generics.DestroyAPIView):
 # def send_unlike_notification(sender, instance, **kwargs):
 #     # Send a notification to the post author and/or other interested parties
 #     pass
+
+# "generics.get_object_or_404(Post, pk=pk)", "Like.objects.get_or_create(user=request.user, post=post)
